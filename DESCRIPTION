@@ -1,0 +1,18 @@
+Package: branchCorr
+Type: Package
+Title: Correlation Matching for Branching Processes
+Maintainer: Jason Xu <jqxu@ucla.edu>
+Author: Jason Xu
+Description: Z-estimation via correlation matching for partially observed
+    branching processes and stochastic compartmental models.
+Version: 0.1.0
+License: What license is it under?
+LazyData: TRUE
+Depends:
+    R (>= 3.0.1),
+    BiasedUrn
+Suggests:
+    plyr
+Collate:
+    branchCorr_source.r
+RoxygenNote: 5.0.1
