@@ -9,10 +9,7 @@ Version: 0.1.0
 License: What license is it under?
 LazyData: TRUE
 Depends:
-    R (>= 3.0.1),
-    BiasedUrn
-Suggests:
-    plyr
+    R (>= 3.0.1)
 Collate:
     branchCorr_source.r
 RoxygenNote: 5.0.1

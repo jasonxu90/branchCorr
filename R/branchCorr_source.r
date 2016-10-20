@@ -1,7 +1,3 @@
-### Dependencies ###
-library(BiasedUrn)
-library(plyr)
-
 #' Expit function
 #'
 #' Evaluates the expit function
@@ -190,31 +186,45 @@ simCompObserved <- function(t.end, initPopulation, rates, progStructure, obsTime
 sim.once <- function(t.end, initPopulation, rates, progStructure, obsTimes, vecOutput=FALSE, maxEvents = 999999999999){
   res = -99 # error catch
   while(res[1] == -99){
-    res <- simulateObservations(t.end, initPopulation, rates, progStructure, obsTimes, vecOutput, maxEvents)  }
+    res <- simCompObserved(t.end, initPopulation, rates, progStructure, obsTimes, vecOutput, maxEvents)  }
   return(res)
 }
 
-#' Hypergeometric sampling
+#' Multivariate hypergeometric sampling of data
 #'
 #' Samples hypergeometrically from a matrix containing discretely observed data from a stochastic compartmental model.
 #'
 #' @param data A matrix containing discretely observed data, in the format returned by \code{\link{simCompObserved}}
 #' @param sampSize The sample size or number of draws n in a hypergeometric distribution
-#' @param constantPopulation Logical whether to sample from equal total population, N, for all compartments
-#' @param N The fixed total population if constantPopulation=TRUE
 #' @export
-hyperGeoSample <- function(data, sampSize, constantPopulation=FALSE, N=10000){
+hyperGeoSample <- function(data, sampSize){
   sampleMatrix <- matrix(NA, dim(data)[1], dim(data)[2])
-  totalPop <- colSums(data)
-
-  if(constantPopulation){
-    totalPop <- rep(N,length(totalPop))
-  }
-
   for(j in 1:dim(data)[2]){
-    sampleMatrix[,j] <- rMFNCHypergeo(nran=1, m = data[,j], n = sampSize, odds = 1)
+    sampleMatrix[,j] <- samp_mvhGeo(data[,j], sampSize)
   }
   return(sampleMatrix)
+}
+
+#' Sample multivariate hypergeometric distribution
+#'
+#' This function generates a single random vector from the multivariate hypergeometric distribution.
+#'
+#' @param colorPops A vector containing the number of each ``color" or type of success in the population
+#' @param sampSize A number, the size of the sample to be drawn
+#' @return A vector drawn without replacement from colorPops
+#' @examples
+#' samp_mvhGeo(c(100,500,200,300,300,500,50),1000)
+samp_mvhGeo <- function(colorPops, sampSize){
+    K <- length(colorPops)
+    N <- sum(colorPops)
+    if(sampSize > N){
+      res <- colorPops
+    }else{
+      res <- rep(0, K)
+      subSample <- table(sample(rep(1:K, colorPops), sampSize))
+      res[as.numeric(names(subSample))] <- subSample
+    }
+    return(res)
 }
 
 ####################################
@@ -414,6 +424,7 @@ V_xy <- function(t,rates, progType1, progType2, type1,type2, progStructure){
 #' The function simply converts the raw moments U, M into the corresponding variance expression.
 #' @inheritParams U_xx
 #' @return Variance of specified mature cell compartment at time t
+#' @export
 Var_xFrom1 <- function(t,rates,progType,type,progStructure){
   return( U_xx(t,rates,progType,type,progStructure) + M_1x(t,rates,progType,type,progStructure) - M_1x(t,rates,progType,type,progStructure)^2 )
 }
@@ -424,6 +435,7 @@ Var_xFrom1 <- function(t,rates,progType,type,progStructure){
 #' The function simply converts the raw moments U, M into the corresponding variance expression.
 #' @inheritParams V_xx
 #' @return Variance of specified mature cell compartment at time t
+#' @export
 Var_xFrom2 <- function(t,rates,progType,type,progStructure){
   return( V_xx(t,rates,progType,type,progStructure) + M_2x(t,rates,progType,type,progStructure) - M_2x(t,rates,progType,type,progStructure)^2 )
 }
@@ -434,6 +446,7 @@ Var_xFrom2 <- function(t,rates,progType,type,progStructure){
 #' The function simply converts the raw moments U, M into the corresponding covariance expression.
 #' @inheritParams U_xy
 #' @return Covariance between specified mature type compartments at time t
+#' @export
 Cov_xyFrom1 <- function(t,rates, progType1, progType2, type1, type2, progStructure){
   return( U_xy(t,rates, progType1, progType2, type1, type2, progStructure) - M_1x(t,rates,progType1,type1, progStructure)*M_1x(t,rates,progType2,type2, progStructure))
 }
@@ -444,6 +457,7 @@ Cov_xyFrom1 <- function(t,rates, progType1, progType2, type1, type2, progStructu
 #' The function simply converts the raw moments U, M into the corresponding covariance expression.
 #' @inheritParams V_xy
 #' @return Covariance between specified mature type compartments at time t
+#' @export
 Cov_xyFrom2 <- function(t,rates, progType1, progType2, type1, type2, progStructure){
   if(progType1!=progType2){return(0)}
   return( V_xy(t,rates, progType1, progType2, type1, type2, progStructure) - M_2x(t,rates,progType1,type1, progStructure)*M_2x(t,rates,progType2,type2, progStructure))
@@ -672,7 +686,7 @@ inferNLMINBSamplingCorr <- function( initGuess, obsTimes, obsCorr, nSample, nTot
 #' @param data A matrix of observed counts in the same format as produced by \code{\link{simCompObserved}}
 #' @param numInits Number of random restarts
 #' @param initMean The mean for the random initial parameters
-#' @return Vector containing the best fitting parameters
+#' @return Matrix whose rows contain the best three solutions
 #' @export
 #'
 optimizeSamplingCorrNLMINB <- function(data, numInits, initMean, obsTimes, nSample, nTotal, trueDeaths, progStructure){
@@ -689,28 +703,21 @@ optimizeSamplingCorrNLMINB <- function(data, numInits, initMean, obsTimes, nSamp
       sol <- inferNLMINBSamplingCorr( initGuess, obsTimes, obsCorr, nSample, nTotal, trueDeaths, progStructure)
     }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")} )
     param <- sol$par
+    #label switching: let's put bigger of the two further diff rates  first wlog
+    #     if(param[4] < param[5]){
+    #       #if(param[6] < param[7]){
+    #       temp <- param[4]; param[4] <- param[5]; param[5] <- temp
+    #       temp <- param[6]; param[6] <- param[7]; param[7] <- temp
+    #     }
     estimates[i,] <- c(param, sol$obj)
+    est <- estimates[i,]
+    initProbTemp <- est[(length(initMean)+1):(length(initMean)+numProgs)]
+    p1 <- 1/(1+sum(exp(initProbTemp)))
+    estimates[i,(length(initMean)+1):(length(initMean)+numProgs)] <- p1*exp(initProbTemp)
+    estimatesBest <- estimates[which(estimates[,dim(estimates)[2]] %in% sort(estimates[,dim(estimates)[2]])[1:1]),] #best three for robustness
   }
-  estimates <- estimates[which(estimates[,(length(initMean) + numProgs + 1)] %in% sort(estimates[,(length(initMean) + numProgs + 1)])[1:1]),] #best three for robustness
-  bestEst <- apply(estimates,2,median) #take median of three best out of numRestarts
-  print(bestEst[1:length(initMean)])
-  initProbTemp <- bestEst[(length(initMean)+1):(length(initMean)+numProgs)]
-  p1 <- 1/(1+sum(exp(initProbTemp)))
-  #print( round(c(p1, p1*exp(initProbTemp)),3) )
-  return(bestEst)
+  return(estimatesBest)
 }
-
-#' Infer optimal rates via correlation loss function with error handling
-#'
-#' This function is a wrapper for \code{\link{optimizeSamplingCorrNLMINB}} that checks for any
-#' error codes using \code{tryCatch}
-#'
-#' @inheritParams optimizeSamplingCorrNLMINB
-#' @export
-NLMINBtrycatch <- function(data, numInits, initMean, obsTimes, nSample, nTotal, trueDeaths, progStructure){
-  return(tryCatch(optimizeSamplingCorrNLMINB(data, numInits, initMean, obsTimes, nSample, nTotal, trueDeaths, progStructure), error=function(e) rep(999,(length(initMean)+2)))    )
-}
-
 #' Generate random initial population vector
 #'
 #' This function converts an initial distribution to an initial population indicator vector. It samples from

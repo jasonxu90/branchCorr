@@ -25,7 +25,7 @@ optimizeSamplingCorrNLMINB(data, numInits, initMean, obsTimes, nSample, nTotal,
 \item{progStructure}{A vector of length equal to number of mature types whose i'th entry contains the corresponding hidden progenitor type from which mature type i descends}
 }
 \value{
-Vector containing the best fitting parameters
+Matrix whose rows contain the best three solutions
 }
 \description{
 This function is a wrapper for \code{\link{inferNLMINBSamplingCorr}} that takes a dataset in the format produced by

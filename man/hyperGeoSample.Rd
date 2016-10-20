@@ -2,18 +2,14 @@
 % Please edit documentation in R/branchCorr_source.r
 \name{hyperGeoSample}
 \alias{hyperGeoSample}
-\title{Hypergeometric sampling}
+\title{Multivariate hypergeometric sampling of data}
 \usage{
-hyperGeoSample(data, sampSize, constantPopulation = FALSE, N = 10000)
+hyperGeoSample(data, sampSize)
 }
 \arguments{
 \item{data}{A matrix containing discretely observed data, in the format returned by \code{\link{simCompObserved}}}
 
 \item{sampSize}{The sample size or number of draws n in a hypergeometric distribution}
-
-\item{constantPopulation}{Logical whether to sample from equal total population, N, for all compartments}
-
-\item{N}{The fixed total population if constantPopulation=TRUE}
 }
 \description{
 Samples hypergeometrically from a matrix containing discretely observed data from a stochastic compartmental model.
