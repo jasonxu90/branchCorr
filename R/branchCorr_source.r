@@ -212,6 +212,7 @@ hyperGeoSample <- function(data, sampSize){
 #' @param colorPops A vector containing the number of each ``color" or type of success in the population
 #' @param sampSize A number, the size of the sample to be drawn
 #' @return A vector drawn without replacement from colorPops
+#' @export
 #' @examples
 #' samp_mvhGeo(c(100,500,200,300,300,500,50),1000)
 samp_mvhGeo <- function(colorPops, sampSize){
