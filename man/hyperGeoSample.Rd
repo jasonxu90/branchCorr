@@ -7,7 +7,7 @@
 hyperGeoSample(data, sampSize)
 }
 \arguments{
-\item{data}{A matrix containing discretely observed data, in the format returned by \code{\link{simCompObserved}}}
+\item{data}{A matrix containing independent realizations of discretely observed data from the model. Each row of this matrix is in the format returned by \code{\link{simCompObserved}} wiht vecOutput=T}
 
 \item{sampSize}{The sample size or number of draws n in a hypergeometric distribution}
 }

@@ -17,9 +17,10 @@ install_github("jasonxu90/branchCorr")
 ```
 
 ## Vignette
-By default, the vignette is not compiled during the installation. We provide a vignette, ``branchCorr: simulation and inference for partially observed stochastic compartmental models'', that walks through simulation and inference functions necessary to recreate all simulation studies in [1]. Examples are smaller-scale, but still require significant computing time. Users are encouraged to run all functions in the vignette locally by reducing the number of simulations, initial restarts, etc when necessary. 
+By default, the vignette is not compiled during the installation. We provide a vignette, ``branchCorr: simulation and inference for partially observed stochastic compartmental models'', that walks through simulation and inference functions necessary to recreate all simulation studies in [2]. Examples are smaller-scale, but still require quite some computing time. Users are encouraged to run all functions in the vignette locally by reducing the number of simulations, initial restarts, etc when necessary. 
 
-The source `.Rnw` file, as well as a pdf of the vignette compiled using `knitr`, are included in the repository.
+The source `.Rnw` file, as well as a `.pdf` of the vignette compiled using `knitr`, are included in the repository. To automatically compile the vignette upon package installation, instead install using the line
+`install_github("jasonxu90/branchCorr", build_vignettes = TRUE)`. Note that this option will be significantly slower than installing the package alone.
 
 
 ## References

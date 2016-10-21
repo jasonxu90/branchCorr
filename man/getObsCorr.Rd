@@ -7,7 +7,7 @@
 getObsCorr(data, obsTimes)
 }
 \arguments{
-\item{data}{A matrix of mature cell type counts, in format produced by \code{\link{simCompObserved}} with vecOutput=TRUE}
+\item{data}{A matrix of mature cell type counts, whose rows correspond to independent realizations and are in the format produced by \code{\link{simCompObserved}} with vecOutput=TRUE}
 
 \item{obsTimes}{A vector of corresponding observation times}
 }

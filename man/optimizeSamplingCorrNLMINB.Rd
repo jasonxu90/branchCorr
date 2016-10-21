@@ -8,7 +8,7 @@ optimizeSamplingCorrNLMINB(data, numInits, initMean, obsTimes, nSample, nTotal,
   trueDeaths, progStructure)
 }
 \arguments{
-\item{data}{A matrix of observed counts in the same format as produced by \code{\link{simCompObserved}}}
+\item{data}{A matrix whose rows contain observed counts over independent realizations from the model; each row is in the same format as produced by \code{\link{simCompObserved}} with vecOutput=T}
 
 \item{numInits}{Number of random restarts}
 

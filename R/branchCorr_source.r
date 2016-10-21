@@ -194,7 +194,7 @@ sim.once <- function(t.end, initPopulation, rates, progStructure, obsTimes, vecO
 #'
 #' Samples hypergeometrically from a matrix containing discretely observed data from a stochastic compartmental model.
 #'
-#' @param data A matrix containing discretely observed data, in the format returned by \code{\link{simCompObserved}}
+#' @param data A matrix containing independent realizations of discretely observed data from the model. Each row of this matrix is in the format returned by \code{\link{simCompObserved}} wiht vecOutput=T
 #' @param sampSize The sample size or number of draws n in a hypergeometric distribution
 #' @export
 hyperGeoSample <- function(data, sampSize){
@@ -586,7 +586,7 @@ samplingCor_xy <- function(t,rates, initProb, type1, type2, pop1, pop2, total1, 
 #' and a vector containing the corresponding observation times. The data matrix should be in the same format
 #' as returned by \code{\link{simCompObserved}} with vecOutput=TRUE
 #'
-#' @param data A matrix of mature cell type counts, in format produced by \code{\link{simCompObserved}} with vecOutput=TRUE
+#' @param data A matrix of mature cell type counts, whose rows correspond to independent realizations and are in the format produced by \code{\link{simCompObserved}} with vecOutput=TRUE
 #' @param obsTimes A vector of corresponding observation times
 #' @return Matrix containing pairwise correlations at each observation time
 #' @export
@@ -684,7 +684,7 @@ inferNLMINBSamplingCorr <- function( initGuess, obsTimes, obsCorr, nSample, nTot
 #' @param nSample A vector containing the sample sizes of each mature type as arguments to hypergeometric sampling; this is the number of draws n
 #' @param nTotal A vector containing the total sizes of each mature population; this is the total population N in hypergeometric sampling
 #' @param progStructure A vector of length equal to number of mature types whose i'th entry contains the corresponding hidden progenitor type from which mature type i descends
-#' @param data A matrix of observed counts in the same format as produced by \code{\link{simCompObserved}}
+#' @param data A matrix whose rows contain observed counts over independent realizations from the model; each row is in the same format as produced by \code{\link{simCompObserved}} with vecOutput=T
 #' @param numInits Number of random restarts
 #' @param initMean The mean for the random initial parameters
 #' @return Matrix whose rows contain the best three solutions
