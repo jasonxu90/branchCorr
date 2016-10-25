@@ -26,8 +26,8 @@ The source `.Rnw` file, as well as a `.pdf` of the vignette compiled using `knit
 ## References
 1.  Gillespie DT (1977) "Exact stochastic simulation of coupled chemical reactions," *Journal of Physical Chemistry,* 81(25):2340-2361.
 
-2. To be posted 
+2. Xu J, Koelle S, Guttorp P, Wu C, Dunbar Ce, Abkowitz JL, Minin VN (2016) "Statistical inference in partially observed stochastic compartmental models with application to cell lineage tracking of in vivo hematopoiesis," https://arxiv.org/abs/1610.07550
 
-3. Catlin, SN, Abkowitz, JL and Guttorp, P (2001) "Statistical Inference in a Two-Compartment Model for Hematopoiesis,", *Biometrics,* 57(2):546-553.
+3. Catlin, SN, Abkowitz, JL and Guttorp, P (2001) "Statistical Inference in a Two-Compartment Model for Hematopoiesis," *Biometrics,* 57(2):546-553.
 
-4. Pakes A and Pollard D (1989) "Simulation and the asymptotics of optimization estimators," *Econometrica: Journal of the Econometric Society,*, 57(5):1027-1057. 
+4. Pakes A and Pollard D (1989) "Simulation and the asymptotics of optimization estimators," *Econometrica: Journal of the Econometric Society,* 57(5):1027-1057. 
